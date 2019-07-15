@@ -21,7 +21,7 @@ symbols = ['AAPL.O', 'MSFT.O', 'SPY', 'GLD']
 data = ek.get_timeseries(symbols, fields='CLOSE', start_date='2010-01-04', end_date='2018-06-29')
 
 
-#Returns
+#Calculate Returns and graph them
 noa = len(symbols)
 
 rets = np.log(data / data.shift(1))
