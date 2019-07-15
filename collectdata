@@ -1,0 +1,29 @@
+import eikon as ek
+import pandas as pd
+import numpy as np 
+import cufflinks as cf
+import configparser as cp
+cf.set_config_file(offline=True)
+import math
+import numpy as np
+import scipy.stats as scs
+import statsmodels.api as sm
+from pylab import mpl, plt
+plt.style.use('seaborn')
+mpl.rcParams['font.family'] = 'serif'
+%matplotlib inline
+
+ek.set_app_key()
+
+
+#Data
+symbols = ['AAPL.O', 'MSFT.O', 'SPY', 'GLD']
+data = ek.get_timeseries(symbols, fields='CLOSE', start_date='2010-01-04', end_date='2018-06-29')
+
+
+#Returns
+noa = len(symbols)
+
+rets = np.log(data / data.shift(1))
+
+rets.hist(bins=40, figsize=(10, 8));
