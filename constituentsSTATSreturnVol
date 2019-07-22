@@ -1,0 +1,12 @@
+plt.style.use('ggplot')
+semana = 52
+
+data_returns = np.log(data/data.shift(1))
+data_returns.dropna(inplace=True)
+stats = pd.DataFrame()
+stats['Annualized Returns(%)'] = data_returns.mean() * semana *100
+stats['Annualized Volatility(%)'] = data_returns.std() * np.sqrt(semana)*100
+stats['Sharpe Ratio'] = stats['Annualized Returns(%)'] /stats['Annualized Volatility(%)']
+print(82*'-')
+print('Assets Classes Annualized Statistics — full observation period')
+stats.style.bar(color=['red','green'], align='zero')
