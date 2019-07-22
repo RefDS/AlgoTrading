@@ -17,8 +17,13 @@ ek.set_app_key()
 
 
 #Data
-symbols = ['AAPL.O', 'MSFT.O', 'SPY', 'GLD']
-data = ek.get_timeseries(symbols, fields='CLOSE', start_date='2010-01-04', end_date='2018-06-29')
+rics = ['AAPL.O', 'MSFT.O', 'SPY', 'GLD']
+#data = ek.get_timeseries(symbols, fields='CLOSE', start_date='2010-01-04', end_date='2018-06-29')
+
+#DATA SELECTION IN A DATAFRAME
+data = pd.DataFrame()
+for ric in rics:
+    data[ric] = ek.get_timeseries(ric, fields='CLOSE', start_date='2018-06-18', end_date='2019-06-19')['CLOSE']
 
 
 #Calculate Returns and graph them
