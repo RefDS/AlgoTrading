@@ -1,0 +1,49 @@
+#Strategic Asset Allocation with Python
+#
+#Data
+#RIC SELECTTION
+rics = ['AAPL.O', 'AMZN.O', 'GOOGL.O', 'TSLA.O', 'FB.O', 'SPOT.K', 'IBM.N', 'PFE', 'JPM', 'MA', 'BNPP.PA', 'AIRP.PA']
+fields = ['CF_CLOSE']
+
+#DATA SELECTION IN A DATAFRAME
+data = pd.DataFrame()
+for ric in rics:
+    data[ric] = ek.get_timeseries(ric, fields='CLOSE', start_date='2017-06-18', end_date='2019-06-19')['CLOSE']
+ 
+#Asset Weighting 
+from pypfopt.expected_returns import mean_historical_return
+from pypfopt.risk_models import CovarianceShrinkage
+from pypfopt.efficient_frontier import EfficientFrontier
+
+
+mu = mean_historical_return(data)
+S = CovarianceShrinkage(data).ledoit_wolf()
+
+ef = EfficientFrontier(mu, S)
+weights = ef.max_sharpe()
+
+cleaned_weights = ef.clean_weights()
+print(cleaned_weights)
+
+#Efficient Return
+ef.portfolio_performance(verbose=True)
+
+#Clean Weight with Max Sharpe Ratio
+ef = EfficientFrontier(mu, S, gamma=1)
+ef.max_sharpe()
+print(ef.clean_weights())
+
+#Post-processing weights In practice, we then need to convert these weights into an actual allocation, telling you how many shares of each asset you should purchase. This is discussed further in Post-processing weights, but we provide an example below:
+#These are the quantitites of shares that should be bought to have a $200,000 portfolio:
+
+from pypfopt.discrete_allocation import DiscreteAllocation, get_latest_prices
+
+
+latest_prices = get_latest_prices(data)
+da = DiscreteAllocation(weights, latest_prices, total_portfolio_value=200000)
+allocation, leftover = da.lp_portfolio()
+print(allocation)
+
+#Max Sharpe ratio by asset
+ef = EfficientFrontier(mu, S, gamma=1)
+ef.max_sharpe()
